@@ -6,31 +6,40 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct MeetingView: View {
     @Binding var scrum: DailyScrum
+    
+    @StateObject var scrumTimer = ScrumTimer()
+    
+    var player: AVPlayer { AVPlayer.sharedDingPlayer }
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 16.0)
                 .fill(scrum.color)
             VStack {
+                MeetingHeaderView(secondsElapsed: scrumTimer.secondsElapsed, secondsRemaining: scrumTimer.secondsRemaining, scrumColor: scrum.color)
                 Circle()
                     .strokeBorder(lineWidth: 24, antialiased: true)
-                HStack {
-                    Text("Speaker 1 or 3")
-                    Spacer()
-                    Button {
-                        // TODO: something!
-                    } label: {
-                        Image(systemName: "forward.fill")
-                    }
-                    .accessibilityLabel(Text("Next speaker"))
-                }
+                MeetingFooterView(speakers: scrumTimer.speakers, skipAction: scrumTimer.skipSpeaker)
             }
         }
         .padding()
         .foregroundColor(scrum.color.accessibleFontColor)
+        .onAppear {
+            scrumTimer.reset(lengthInMinutes: scrum.lengthInMinutes, attendees: scrum.attendees)
+            scrumTimer.speakerChangedAction = {
+                // NOTE: - Seeking to time .zero ensures the audio file always plays from the beginning.
+                player.seek(to: .zero)
+                player.play()
+            }
+            scrumTimer.startScrum()
+        }
+        .onDisappear {
+            scrumTimer.stopScrum()
+        }
     }
 }
 
