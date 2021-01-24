@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EditView: View {
     @Binding var scrumData: DailyScrum.Data
+    //var scrumData: DailyScrum.Data
     @State private var newAttendee = ""
     
     var body: some View {
@@ -56,6 +57,7 @@ struct EditView: View {
 }
 
 struct EditView_Previews: PreviewProvider {
+    // @State static var data = DailyScrum.data[0].data
     static var previews: some View {
         // NOTE: - Use .constant to create a binding to a hard-coded, immutable value
                 // .constant bindings are useful in previews.
