@@ -43,6 +43,17 @@ struct DetailView: View {
                         .accessibilityValue(Text(attendee))
                 }
             }
+            Section(header: Text("History")) {
+                if scrum.history.isEmpty {
+                    Label("No meeting yet", systemImage: "calendar.badge.exclamationmark")
+                }
+                ForEach(scrum.history) { history in
+                    HStack {
+                        Image(systemName: "calendar")
+                        Text(history.date, style: .date)
+                    }
+                }
+            }
         }
         .listStyle(InsetGroupedListStyle())
         // NOTE: - "A button can be written with the label as the first argument."
