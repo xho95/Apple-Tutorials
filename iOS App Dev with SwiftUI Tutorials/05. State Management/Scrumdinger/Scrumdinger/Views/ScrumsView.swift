@@ -10,6 +10,9 @@ import SwiftUI
 struct ScrumsView: View {
     @Binding var scrums: [DailyScrum]
     
+    @State private var isPresented = false
+    @State private var newScrumData = DailyScrum.Data()
+    
     var body: some View {
         List {
             ForEach(scrums) { scrum in
@@ -21,10 +24,26 @@ struct ScrumsView: View {
         }
         .navigationTitle("Daily Scrums")
         .navigationBarItems(trailing: Button {
-            // TODO: - something!
+            isPresented = true
         } label: {
             Image(systemName: "plus")
         })
+        .sheet(isPresented: $isPresented) {
+            NavigationView {
+                EditView(scrumData: $newScrumData)
+                    .navigationBarItems(leading: Button("Dismiss") {
+                        isPresented = false
+                    }, trailing: Button("Add") {
+                        let newScrum =
+                            DailyScrum(title: newScrumData.title,
+                                       attendees: newScrumData.attendees,
+                                       lengthInMinutes: Int(newScrumData.lengthInMinutes),
+                                       color: newScrumData.color)
+                        scrums.append(newScrum)
+                        isPresented = false
+                    })
+            }
+        }
     }
     
     // NOTE: - A utility method to retrieve a binding from an indivitual scrum
