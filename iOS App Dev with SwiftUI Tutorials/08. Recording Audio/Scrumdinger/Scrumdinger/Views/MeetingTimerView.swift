@@ -53,6 +53,7 @@ struct MeetingTimerView: View {
             .foregroundColor(scrumColor.accessibleFontColor)
             ForEach(speakers) { speaker in
                 if speaker.isCompleted, let index = speakers.firstIndex(where: { $0.id == speaker.id }) {
+                    //print("\(index)")
                     SpeakerArc(speakerIndex: index, totalSpeakers: speakers.count)
                         .rotation(Angle(degrees: -90))
                         .stroke(scrumColor, lineWidth: 12)
